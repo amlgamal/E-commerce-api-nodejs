@@ -14,9 +14,11 @@ const {
     updateCategory ,
     deleteCategory,
 } = require('../services/categoryService') ; 
+const subcategoriesRoute = require('./subCategoryRoutes');
 
 const router = express.Router();
-
+// if you will access this route => take him to this subcategory route
+router.use('/:categoryId/subcategories', subcategoriesRoute);
 
 router.route('/').get(getCategories).post(createCategoryValidator,createCategory);
 

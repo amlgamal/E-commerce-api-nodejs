@@ -12,6 +12,7 @@ const dbConnection = require("./config/database");
 //routes
 const categoryRoute = require("./routes/categoryRoute");
 const subCategoryRoute = require("./routes/subCategoryRoutes");
+const brandRoute = require("./routes/brandRoute");
 
 //conect with DB
 dbConnection();
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === "development") {
 // Mount route
 app.use("/api/v1/categories", categoryRoute);
 app.use("/api/v1/subcategories", subCategoryRoute);
+app.use("/api/v1/brand", brandRoute);
 
 // what is deffrence
 app.all("*", (req, res, next) => {

@@ -1,7 +1,7 @@
 const globalError = (err, req, res, next) => {
-  err.statuscode = err.statuscode || 500;
-  err.status = err.status || "error";
-  if (process.env.NODE_ENV === "development") {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+  if (process.env.NODE_ENV === 'development') {
     sendErrorForDev(err, res);
   } else {
     sendErrorForProd(err, res);
@@ -23,4 +23,5 @@ const sendErrorForProd = (err, res) => {
     message: err.message,
   });
 };
+
 module.exports = globalError;
