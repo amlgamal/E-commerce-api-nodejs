@@ -8,15 +8,36 @@ const Product = require("../models/productModel");
 // @route   GET /api/v1/product
 // @access  Public
 exports.getproducts = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+  // 1)filtering
+  const queryStringObj = { ...req.query };
+  const excludeFields = ["page", "sort", "limit", "fields"];
+  excludeFields.forEach((field) => delete queryStringObj[field]);
+  //filtering using [gte , gt , lte , lt]
+  let queryStr = JSON.stringify(queryStringObj);
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-  const product = await Product.find({})
+  // 2)pagination
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 50;
+  const skip = (page - 1) * limit;
+  //Build query
+  let mongooseQuery = Product.find(JSON.parse(queryStr)) //1-filterObiect 2-chain method(.where().equal())
     .skip(skip)
     .limit(limit)
-    .populate({ path: "category", select: "name" });
-  res.status(200).json({ results: product.length, page, data: product });
+    .populate({ path: "category", select: "name -_id" });
+
+  // 3)sorting
+if(req.query.sort){
+  const sortBy = req.query.sort.split(',').join(' ');
+  mongooseQuery = mongooseQuery.sort(sortBy);
+}else{
+  mongooseQuery = mongooseQuery.sort("_createAt")
+}
+
+  //Execute query
+  const products = await mongooseQuery;
+
+  res.status(200).json({ results: products.length, page, data: products });
 });
 
 // @desc    Get specific product by id
@@ -48,8 +69,8 @@ exports.createproduct = asyncHandler(async (req, res) => {
 // @access  Private
 exports.updateproduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  //it is  not necessarily to update title each time 
-  if (req.body.title){
+  //it is  not necessarily to update title each time
+  if (req.body.title) {
     req.body.slug = slugify(req.body.title);
   }
 

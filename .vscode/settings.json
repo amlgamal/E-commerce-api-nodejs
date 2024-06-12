@@ -1,0 +1,11 @@
+{
+  "color-highlight.markerType": "underline",
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.linkedEditing": true,
+  "editor.cursorBlinking": "solid",
+  "editor.quickSuggestions": {
+    "other": "inline"
+  },
+  "editor.gotoLocation.multipleDefinitions": "goto",
+  "editor.gotoLocation.multipleTypeDefinitions": "goto"
+}
