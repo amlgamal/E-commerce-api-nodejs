@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String,
       required: [true, "Product description is required"],
-      minlength: [20, "Too short product description"],
+      minlength: [11, "Too short product description"],
     },
     quantity: {
       type: Number,
@@ -72,13 +72,13 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Mongoose query middleware
-// productSchema.pre(/^find/, function (next) {
-//   this.populate({
-//     path: 'category',
-//     select: 'name -_id',
-//   });
-//   next();
-// });
+// Mongoose query middleware (for population)
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: 'name -_id',
+  });
+  next();
+});
 
 module.exports = mongoose.model("Product", productSchema);

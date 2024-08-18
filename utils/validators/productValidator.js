@@ -1,5 +1,6 @@
 //rules (array of rules)
-const { check } = require("express-validator");
+const slugify = require('slugify')
+const { check , body} = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
 const Category = require("../../models/categoryModel");
 const subCategories = require("../../models/subCategoryModel");
@@ -11,12 +12,18 @@ exports.createProductValidator = [
     .isLength({ min: 3 })
     .withMessage("Too short Product name")
     .isLength({ max: 100 })
-    .withMessage("Too long Product name"),
+    .withMessage("Too long Product name")
+    .custom((val , {req} ) => {
+      req.body.slug = slugify(val)
+      return true
+    }),
+
   check("description")
     .notEmpty()
     .withMessage("product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long product description"),
+    
   check("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -53,6 +60,7 @@ exports.createProductValidator = [
     .optional()
     .isArray()
     .withMessage("images must be an array of string"),
+
   check("category")
     .notEmpty()
     .withMessage("Product must be belong to category")
@@ -67,6 +75,7 @@ exports.createProductValidator = [
         }
       })
     ),
+
   check("subcategories")
     .optional()
     .isMongoId()
@@ -128,6 +137,10 @@ exports.getProductValidator = [
 
 exports.updateProductValidator = [
   check("id").isMongoId().withMessage("Invalid Product id format"),
+  body('title').custom((val , {req} ) => {
+    req.body.slug = slugify(val)
+    return true
+  }),
   validatorMiddleware,
 ];
 
