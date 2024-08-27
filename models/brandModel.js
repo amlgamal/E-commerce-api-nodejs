@@ -18,5 +18,20 @@ const brandSchema = new mongoose.Schema({
     {timestamps : true }
 );
 
+const setImageURL = (doc) => {
+    if (doc.image) {
+      const imageURL = `${process.env.BASE_URL}/brands/${doc.image}`;
+      doc.image = imageURL;
+    }
+  };
+  // findOne , findAll , update
+  brandSchema.post("init", (doc) => {
+    setImageURL(doc);
+  });
+  // create
+  brandSchema.post("save", (doc) => {
+    setImageURL(doc);
+  });
+
 //2- cteate Model
 module.exports  = mongoose.model('Brand', brandSchema);

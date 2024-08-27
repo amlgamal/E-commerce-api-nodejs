@@ -1,6 +1,6 @@
 //rules (array of rules)
-const slugify = require('slugify')
-const { check , body} = require("express-validator");
+const slugify = require("slugify");
+const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
 const Category = require("../../models/categoryModel");
 const subCategories = require("../../models/subCategoryModel");
@@ -13,9 +13,9 @@ exports.createProductValidator = [
     .withMessage("Too short Product name")
     .isLength({ max: 100 })
     .withMessage("Too long Product name")
-    .custom((val , {req} ) => {
-      req.body.slug = slugify(val)
-      return true
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
     }),
 
   check("description")
@@ -23,7 +23,7 @@ exports.createProductValidator = [
     .withMessage("product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long product description"),
-    
+
   check("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -55,7 +55,7 @@ exports.createProductValidator = [
     .optional()
     .isArray()
     .withMessage("colors must be an array of string"),
-  check("imageCover").notEmpty().withMessage("Product Imagecover is required"),
+  check("imageCover").notEmpty().withMessage("Product Image cover is required"),
   check("images")
     .optional()
     .isArray()
@@ -137,9 +137,9 @@ exports.getProductValidator = [
 
 exports.updateProductValidator = [
   check("id").isMongoId().withMessage("Invalid Product id format"),
-  body('title').custom((val , {req} ) => {
-    req.body.slug = slugify(val)
-    return true
+  body("title").custom((val, { req }) => {
+    req.body.slug = slugify(val);
+    return true;
   }),
   validatorMiddleware,
 ];
